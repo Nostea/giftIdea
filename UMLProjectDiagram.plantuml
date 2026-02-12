@@ -1,0 +1,176 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class User {
+  + id: Long
+  + username: String
+  + password: String
+  + email: String
+  + avatar: String
+  + role: UserRole
+  + createdAt: LocalDateTime
+  --
+  + updateProfile(email: String, avatar: String): void
+  + changePassword(oldPassword: String, newPassword: String): boolean
+  + hasRole(role: UserRole): boolean
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+class Group {
+  + id: Long
+  + name: String
+  + description: String
+  + owner: User
+  + createdAt: LocalDateTime
+  + expiresAt: Time
+  --
+  + inviteUser(user: User, invitedBy: User): GroupMembership
+  + removeMember(user: User, removedBy: User): boolean
+  + updateDetails(name: String, description: String): void
+  + isOwner(user: User): boolean
+  + isMember(user: User): boolean
+  + getMembers(): List<User>
+  + isExpired(): boolean
+}
+
+class Event {
+  + id: Long
+  + name: String
+  + type: EventType
+  + mode: EventMode
+  + deadline: LocalDate
+  + owner: User
+  + group: Group
+  + budgetLimit: double
+  + createdAt: LocalDateTime
+  --
+  + updateEvent(name: String, deadline: LocalDate): void
+  + changeMode(mode: EventMode): void
+  + isDeadlinePassed(): boolean
+  + canUserView(user: User): boolean
+  + getGifts(): List<Gift>
+  + deleteEvent(): void
+}
+
+enum EventType {
+  BIRTHDAY
+  CHRISTMAS
+  WEDDING
+  ANNIVERSARY
+  OTHER
+}
+
+enum EventMode {
+  SECRET
+  OPEN
+}
+
+class Gift {
+  + id: Long
+  + name: String
+  + description: String
+  + thumbnail: String
+  + price: double
+  + externalLink: String
+  + createdBy: User
+  + event: Event
+  + createdAt: LocalDateTime
+  --
+  + updateGift(name: String, description: String, price: double): void
+  + addTag(tag: GiftTag): void
+  + removeTag(tag: GiftTag): void
+  + getTags(): List<GiftTag>
+  + setThumbnail(thumbnail: String): void
+  + canUserEdit(user: User): boolean
+  + deleteGift(): void
+}
+
+class GiftTag {
+  + id: Long
+  + name: String
+  --
+  + rename(newName: String): void
+  + getGifts(): List<Gift>
+}
+
+class GroupMembership {
+  + id: Long
+  + user: User
+  + group: Group
+  + joinedAt: LocalDateTime
+  --
+  + leave(): void
+  + getActiveDuration(): Duration
+}
+
+class NewsArticle {
+  + id: Long
+  + title: String
+  + teaserText: String
+  + content: String
+  + thumbnail: String
+  + author: User
+  + publishedAt: LocalDateTime
+  + createdAt: LocalDateTime
+  + updatedAt: LocalDateTime
+  + status: ArticleStatus
+  + viewCount: Integer
+  + slug: String
+  --
+  + publish(): void
+  + unpublish(): void
+  + updateContent(title: String, content: String): void
+  + incrementViewCount(): void
+  + isPublished(): boolean
+  + canUserEdit(user: User): boolean
+}
+
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+  HIDDEN
+}
+
+class ArticleTag {
+  + id: Long
+  + name: String
+  --
+  + rename(newName: String): void
+  + getArticles(): List<NewsArticle>
+}
+
+class ArticleCategory {
+  + id: Long
+  + name: String
+  + description: String
+  --
+  + updateDetails(name: String, description: String): void
+  + getArticles(): List<NewsArticle>
+}
+
+' Relationships with proper arrow endings
+User "1" *-- "0..*" Group : owns >
+User "1" *-- "0..*" Event : owns >
+User "1" *-- "0..*" Gift : creates >
+User "1" o-- "0..*" GroupMembership
+
+Group "1" *-- "0..*" GroupMembership
+Group "1" *-- "0..*" Event : contains >
+
+Event "1" *-- "0..*" Gift : contains >
+
+Gift "0..*" -- "0..*" GiftTag
+
+User "1" -- "1" UserRole
+
+Event "1" -- "1" EventType
+Event "1" -- "1" EventMode
+
+NewsArticle "1" -- "1" ArticleStatus
+NewsArticle "0..*" -- "0..*" ArticleTag : has >
+NewsArticle "0..*" -- "1" ArticleCategory : belongs to >
+@enduml

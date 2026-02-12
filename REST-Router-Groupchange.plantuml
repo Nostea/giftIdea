@@ -1,0 +1,200 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class User {
+  + id: Long
+  + username: String
+  + password: String
+  + email: String
+  + avatar: String
+  + role: UserRole
+  + createdAt: LocalDateTime
+  --
+  + updateProfile(email: String, avatar: String): void
+  + changePassword(oldPassword: String, newPassword: String): boolean
+  + hasRole(role: UserRole): boolean
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+class Group {
+  + id: Long
+  + name: String
+  + description: String
+  + type: GroupType
+  + mode: GroupMode
+  + deadline: LocalDate
+  + budgetLimit: double
+  + owner: User
+  + createdAt: LocalDateTime
+  + expiresAt: LocalDateTime
+  --
+  + inviteMember(user: User, invitedBy: User): GroupMembership
+  + removeMember(user: User, removedBy: User): boolean
+  + updateDetails(name: String, description: String, deadline: LocalDate): void
+  + changeMode(mode: GroupMode): void
+  + isOwner(user: User): boolean
+  + isMember(user: User): boolean
+  + getMembers(): List<User>
+  + isDeadlinePassed(): boolean
+  + isExpired(): boolean
+  + canUserView(user: User): boolean
+  + getGifts(): List<Gift>
+  + deleteGroup(): void
+}
+
+enum GroupType {
+  BIRTHDAY
+  CHRISTMAS
+  WEDDING
+  ANNIVERSARY
+  OTHER
+}
+
+enum GroupMode {
+  SECRET
+  OPEN
+}
+
+class Gift {
+  + id: Long
+  + name: String
+  + description: String
+  + thumbnail: String
+  + price: double
+  + externalLink: String
+  + createdBy: User
+  + group: Group
+  + createdAt: LocalDateTime
+  --
+  + updateGift(name: String, description: String, price: double): void
+  + addTag(tag: GiftTag): void
+  + removeTag(tag: GiftTag): void
+  + getTags(): List<GiftTag>
+  + setThumbnail(thumbnail: String): void
+  + canUserEdit(user: User): boolean
+  + deleteGift(): void
+}
+
+class GiftTag {
+  + id: Long
+  + name: String
+  --
+  + rename(newName: String): void
+  + getGifts(): List<Gift>
+}
+
+class GroupMembership {
+  + id: Long
+  + user: User
+  + group: Group
+  + joinedAt: LocalDateTime
+  --
+  + leave(): void
+  + getActiveDuration(): Duration
+}
+
+class NewsArticle {
+  + id: Long
+  + title: String
+  + teaserText: String
+  + content: String
+  + thumbnail: String
+  + author: User
+  + publishedAt: LocalDateTime
+  + createdAt: LocalDateTime
+  + updatedAt: LocalDateTime
+  + status: ArticleStatus
+  + viewCount: Integer
+  + slug: String
+  --
+  + publish(): void
+  + unpublish(): void
+  + updateContent(title: String, content: String): void
+  + incrementViewCount(): void
+  + isPublished(): boolean
+  + canUserEdit(user: User): boolean
+}
+
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+class ArticleTag {
+  + id: Long
+  + name: String
+  --
+  + rename(newName: String): void
+  + getArticles(): List<NewsArticle>
+}
+
+class ArticleCategory {
+  + id: Long
+  + name: String
+  + description: String
+  --
+  + updateDetails(name: String, description: String): void
+  + getArticles(): List<NewsArticle>
+}
+
+note right of User
+  **User:**
+  POST /api/auth/register
+  POST /api/auth/login
+  GET /api/users/me
+  PUT /api/users/me
+end note
+
+note top of Group
+  **Groups (formerly Events):**
+  GET /api/groups - Get all my groups
+  GET /api/groups/{id} - Get group by ID
+  POST /api/groups - Create new group
+  PUT /api/groups/{id} - Update group
+  DELETE /api/groups/{id} - Delete group by ID
+  POST /api/groups/{id}/members - Invite member
+  DELETE /api/groups/{id}/members/{userId} - Remove member
+end note
+
+note top of Gift
+  **Gifts:**
+  GET /api/groups/{groupId}/gifts
+  POST /api/gifts
+  GET /api/gifts/{id}
+  PUT /api/gifts/{id}
+  DELETE /api/gifts/{id}
+end note
+
+note top of NewsArticle
+  **Articles (Read-only for users):**
+  GET /api/articles - Get all articles
+  GET /api/articles/{id} - Get article by id
+  POST /api/articles - (ADMIN only)
+end note
+
+' Relationships
+User "1" *-- "0..*" Group : owns >
+User "1" *-- "0..*" Gift : creates >
+User "1" o-- "0..*" GroupMembership
+
+Group "1" *-- "0..*" GroupMembership
+Group "1" *-- "0..*" Gift : contains >
+
+Gift "0..*" -- "0..*" GiftTag
+
+User "1" -- "1" UserRole
+
+Group "1" -- "1" GroupType
+Group "1" -- "1" GroupMode
+
+NewsArticle "1" -- "1" ArticleStatus
+NewsArticle "0..*" -- "0..*" ArticleTag : has >
+NewsArticle "0..*" -- "1" ArticleCategory : belongs to >
+User "1" *-- "0..*" NewsArticle : authors >
+
+@enduml
