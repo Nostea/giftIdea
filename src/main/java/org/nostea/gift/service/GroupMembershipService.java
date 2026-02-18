@@ -3,10 +3,12 @@ package org.nostea.gift.service;
 import org.nostea.gift.model.Group;
 import org.nostea.gift.model.GroupMembership;
 import org.nostea.gift.model.User;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Service
 public class GroupMembershipService {
     // for dependency injection in constructor
     private final UserService userService;
@@ -37,10 +39,17 @@ public class GroupMembershipService {
         return allMembersList;
     }
 
-    public List<GroupMembership> getMembersByGroupId(long groupId) {
-        List<GroupMembership> allMembersList = getAllGroupMemberships();
 
-        if
+    public GroupMembership getGroupMembershipById(long groupmembershipId) {
+        List<GroupMembership> allGroupMemberships = getAllGroupMemberships();
+
+        for(GroupMembership membership : allGroupMemberships) {
+            if(membership.getId() == groupmembershipId) {
+                return membership;
+            }
+        }
+        System.out.println("GroupMembership with id " + groupmembershipId + " not found");
+        return null;
     }
 
 }

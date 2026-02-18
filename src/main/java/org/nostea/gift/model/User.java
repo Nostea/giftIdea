@@ -1,6 +1,8 @@
 package org.nostea.gift.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.ArrayList;
 
 public class User {
     private long id;
@@ -9,10 +11,29 @@ public class User {
     private String email;
     private String avatar;
     private UserRole role;
+    private List<GroupMembership> memberships;
     private LocalDateTime updatedAt;
     private LocalDateTime createdAt;
 
+    public User(long id, String username, String password, String email, String avatar){
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.avatar = avatar;
+        this.role = UserRole.USER;
+        this.memberships = new ArrayList<>();
+        this.createdAt = LocalDateTime.now();
+    }
+
     // Getter & Setter
+    public List<GroupMembership> getMemberships() {
+        return memberships;
+    }
+
+    public void setMemberships(List<GroupMembership> memberships) {
+        this.memberships = memberships;
+    }
 
     public long getId() {
         return id;
@@ -78,15 +99,6 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    public User(long id, String username, String password, String email, String avatar){
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.avatar = avatar;
-        this.role = UserRole.USER;
-        this.createdAt = LocalDateTime.now();
 
-    }
 
 }

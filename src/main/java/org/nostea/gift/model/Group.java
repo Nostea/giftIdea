@@ -2,6 +2,8 @@ package org.nostea.gift.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Group {
     private long id;
@@ -9,10 +11,35 @@ public class Group {
     private String description;
     private GroupMode mode;
     private int budgetLimit;
+    private List<User> members;
     private User owner;
     private LocalDate deadline;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public GroupMode getMode() {
+        return mode;
+    }
+
+    public void setMode(GroupMode mode) {
+        this.mode = mode;
+    }
+
+    public int getBudgetLimit() {
+        return budgetLimit;
+    }
+
+    public void setBudgetLimit(int budgetLimit) {
+        this.budgetLimit = budgetLimit;
+    }
+
+    public List<User> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<User> members) {
+        this.members = members;
+    }
 
     public Group(long id, String groupName, String description, int budgetLimit, User owner) {
         this.id = id;
@@ -20,6 +47,7 @@ public class Group {
         this.description = description;
         this.mode = GroupMode.OPEN;
         this.budgetLimit = budgetLimit;
+        this.members = new ArrayList<>();
         this.owner = owner;
         this.deadline = LocalDate.of(2026,5,12);
         this.createdAt = LocalDateTime.now();

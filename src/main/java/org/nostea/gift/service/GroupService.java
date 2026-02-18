@@ -54,6 +54,25 @@ public class GroupService {
         return null;
     }
 
+    public Group createGroup(Group group) {
+        // In a real application, this would save to a database
+        System.out.println("Group created: " + group.getGroupName());
+        return group;
+    }
+
+    public boolean deleteGroup(long id) {
+        Group group = getGroupById(id);
+
+        if (group == null) {
+            System.out.println("Group with id " + id + " not found. Cannot delete");
+            return false;
+        }
+
+        // In a real application, this would delete from a database
+        System.out.println("Group deleted: " + group.getGroupName() + " (ID: " + id + ")");
+        return true;
+    }
+
     /*
     public List<User> getAllGroupMembers() {
         List<>
