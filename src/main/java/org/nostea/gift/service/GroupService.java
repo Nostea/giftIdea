@@ -1,6 +1,7 @@
 package org.nostea.gift.service;
 
 import org.nostea.gift.model.Group;
+import org.nostea.gift.model.GroupMembership;
 import org.nostea.gift.model.User;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +53,16 @@ public class GroupService {
         }
         System.out.println("The specified group owner " + user + " not found");
         return null;
+    }
+
+    public GroupMembership getMembershipById(long membershipId) {
+        List<Group> groups = getAllGroups();
+        return groupMembershipService.getGroupMembershipById(membershipId, groups);
+    }
+
+    public List<GroupMembership> getAllMemberships() {
+        List<Group> groups = getAllGroups();
+        return groupMembershipService.getAllGroupMemberships(groups);
     }
 
     public Group createGroup(Group group) {

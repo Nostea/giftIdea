@@ -5,22 +5,19 @@ import org.nostea.gift.model.GroupMembership;
 import org.nostea.gift.model.User;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class GroupMembershipService {
     // for dependency injection in constructor
     private final UserService userService;
-    private final GroupService groupService;
 
     //dependency injection, make users visible here
-    public GroupMembershipService(UserService userService, GroupService groupService) {
+    public GroupMembershipService(UserService userService) {
         this.userService = userService;
-        this.groupService = groupService;
     }
 
-    public List<GroupMembership> getAllGroupMemberships() {
+    public List<GroupMembership> getAllGroupMemberships(List<Group> groups) {
 
         User user1 = userService.getUserById(1);
         User user2 = userService.getUserById(2);
@@ -29,8 +26,17 @@ public class GroupMembershipService {
         List<User> membersList1 = List.of(user1, user2, user3);
         List<User> membersList2 = List.of(user2, user3);
 
-        Group group1 = groupService.getGroupById(1);
-        Group group2 = groupService.getGroupById(2);
+        Group group1 = null;
+        Group group2 = null;
+
+        for(Group group : groups) {
+            if(group.getId() == 1) {
+                group1 = group;
+            }
+            if(group.getId()== 2) {
+                group2 = group;
+            }
+        }
 
         GroupMembership groupMembership1 = new GroupMembership(1, membersList1, group1);
         GroupMembership groupMembership2 = new GroupMembership(2, membersList2, group2);
@@ -40,8 +46,8 @@ public class GroupMembershipService {
     }
 
 
-    public GroupMembership getGroupMembershipById(long groupmembershipId) {
-        List<GroupMembership> allGroupMemberships = getAllGroupMemberships();
+    public GroupMembership getGroupMembershipById(long groupmembershipId, List<Group> groups) {
+        List<GroupMembership> allGroupMemberships = getAllGroupMemberships(groups);
 
         for(GroupMembership membership : allGroupMemberships) {
             if(membership.getId() == groupmembershipId) {

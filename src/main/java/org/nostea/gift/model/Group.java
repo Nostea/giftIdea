@@ -17,6 +17,19 @@ public class Group {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    public Group(long id, String groupName, String description, int budgetLimit, User owner) {
+        this.id = id;
+        this.groupName = groupName;
+        this.description = description;
+        this.mode = GroupMode.OPEN;
+        this.budgetLimit = budgetLimit;
+        this.members = new ArrayList<>();
+        this.owner = owner;
+        this.deadline = LocalDate.of(2026,5,12);
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = null;
+    }
+
     public GroupMode getMode() {
         return mode;
     }
@@ -41,18 +54,7 @@ public class Group {
         this.members = members;
     }
 
-    public Group(long id, String groupName, String description, int budgetLimit, User owner) {
-        this.id = id;
-        this.groupName = groupName;
-        this.description = description;
-        this.mode = GroupMode.OPEN;
-        this.budgetLimit = budgetLimit;
-        this.members = new ArrayList<>();
-        this.owner = owner;
-        this.deadline = LocalDate.of(2026,5,12);
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = null;
-    }
+
 
     // === getter & setter
 
