@@ -11,7 +11,7 @@ public class User {
     private String email;
     private String avatar;
     private UserRole role;
-    private List<GroupMembership> memberships;
+    private List<Group> memberships;
     private LocalDateTime updatedAt;
     private LocalDateTime createdAt;
 
@@ -27,11 +27,11 @@ public class User {
     }
 
     // Getter & Setter
-    public List<GroupMembership> getMemberships() {
+    public List<Group> getMemberships() {
         return memberships;
     }
 
-    public void setMemberships(List<GroupMembership> memberships) {
+    public void setMemberships(List<Group> memberships) {
         this.memberships = memberships;
     }
 

@@ -71,6 +71,26 @@ public class GroupService {
         return group;
     }
 
+    public Group addMemberToGroup(long groupId, long userId) {
+        Group group = getGroupById(groupId);
+        User user = userService.getUserById(userId);
+
+        if (group == null) {
+            System.out.println("Group with id " + groupId + " not found");
+            return null;
+        }
+
+        if (user == null) {
+            System.out.println("User with id " + userId + " not found");
+            return null;
+        }
+
+        group.getMembers().add(user);  // [] + user object
+        user.getMemberships().add(group); // automatically register membership in user object
+        System.out.println("User " + user.getUsername() + " added to group " + group.getGroupName());
+        return group;
+    }
+
     public boolean deleteGroup(long id) {
         Group group = getGroupById(id);
 

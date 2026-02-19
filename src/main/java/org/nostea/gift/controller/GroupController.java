@@ -39,6 +39,22 @@ public class GroupController {
         }
     }
 
+    @PostMapping ("/{groupId}/members/{userId}")
+    public ResponseEntity<Group> addMemberToGroupResponse(@PathVariable long groupId, @PathVariable long userId){
+
+        if(groupId <= 0 || userId <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Group updatedGroup = groupService.addMemberToGroup(groupId, userId);
+
+        if (updatedGroup == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(updatedGroup);
+    }
+
     @PostMapping
     public ResponseEntity<Group> createGroupResponse(@RequestBody Group group) {
         if (group == null || group.getGroupName() == null || group.getGroupName().isEmpty()) {

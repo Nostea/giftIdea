@@ -1,12 +1,11 @@
 package org.nostea.gift.controller;
 
+import org.nostea.gift.model.Group;
 import org.nostea.gift.model.User;
+import org.nostea.gift.service.GroupService;
 import org.nostea.gift.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -14,9 +13,11 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
+    private final GroupService groupService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, GroupService groupService) {
         this.userService = userService;
+        this.groupService = groupService;
     }
 
     @GetMapping
@@ -42,4 +43,22 @@ public class UserController {
             return ResponseEntity.ok(user);
         }
     }
+
+    @PostMapping("/{userId}/memberships/{groupId}")
+    public ResponseEntity<User> addGroupMembershipByUserId(@PathVariable long userId, @PathVariable long groupId) {
+        if (userId <= 0 || groupId <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Group group = groupService.getGroupById(groupId);
+        User updatedUser = userService.addGroupToUser(userId, group);
+
+        if(updatedUser == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(updatedUser);
+
+    }
+
 }

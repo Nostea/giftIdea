@@ -1,5 +1,6 @@
 package org.nostea.gift.service;
 
+import org.nostea.gift.model.Group;
 import org.nostea.gift.model.User;
 import org.nostea.gift.model.UserRole;
 import org.springframework.stereotype.Service;
@@ -47,4 +48,21 @@ public class UserService {
         return null;
     }
 
+    public User addGroupToUser(long userId, Group group) {
+        User user = getUserById(userId);
+
+        if(user == null) {
+            System.out.println("User with id " + userId + " not found");
+            return null;
+        }
+
+        if (group == null) {
+            System.out.println("Group not found");
+            return null;
+        }
+
+        user.getMemberships().add(group);   // [] + group object
+        System.out.println("User " + user.getUsername() + " is now member of the group " + group.getGroupName());
+        return user;
+    }
 }
