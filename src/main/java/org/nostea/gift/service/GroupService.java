@@ -21,7 +21,7 @@ public class GroupService {
 
     public List<Group> getAllGroups() {
 
-        User user1 = userService.getUserById(1);  //
+        User user1 = userService.getUserById(1);
         User user2 = userService.getUserById(2);
 
         Group group1 = new Group(1,"Birthdaygroup 1", "Presents for birthday", 50, user1);

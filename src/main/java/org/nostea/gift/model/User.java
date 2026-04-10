@@ -1,5 +1,7 @@
 package org.nostea.gift.model;
 
+import org.nostea.gift.UserCsvEntity;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
@@ -98,7 +100,5 @@ public class User {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
-
-
 
 }
