@@ -8,12 +8,12 @@ public class UsersCsvRepository {
         // TODO: Lies users.csv ein, mache aus jeder Zeile der csv einen UsersCsvEntity eintrag in einer Liste, gib die Liste zurueck
         List<UserCsvEntity> usersList = CsvReaderWriter.readUsers(CsvFilePaths.USERS_CSV_PATH);
 
-        if(usersList.isEmpty()) {
+        if (usersList.isEmpty()) {
             System.out.println("no users exist yet");
             return usersList;
         }
 
-        for(UserCsvEntity user : usersList) {
+        for (UserCsvEntity user : usersList) {
             System.out.println(user);
         }
         return usersList;
@@ -24,7 +24,7 @@ public class UsersCsvRepository {
         List<UserCsvEntity> usersList = CsvReaderWriter.readUsers(CsvFilePaths.USERS_CSV_PATH);
 
         int maxId = 0;
-        for(UserCsvEntity user : usersList) {
+        for (UserCsvEntity user : usersList) {
             if (user.id() > maxId) {
                 maxId = user.id();
             }
@@ -32,7 +32,7 @@ public class UsersCsvRepository {
         return maxId + 1;
     }
 
-    public boolean addUserToCsv( UserCsvEntity newUser) throws Exception {
+    public boolean addUserToCsv(UserCsvEntity newUser) throws Exception {
         List<UserCsvEntity> usersList = CsvReaderWriter.readUsers(CsvFilePaths.USERS_CSV_PATH);
 
         for (UserCsvEntity user : usersList) {
@@ -47,7 +47,7 @@ public class UsersCsvRepository {
 
 
     // einfach nur neuen user mit auto inkrementierung anlegen
-    public boolean addUserToCsv( String newUsername, String newPassword) throws Exception {
+    public boolean addUserToCsv(String newUsername, String newPassword) throws Exception {
         UserCsvEntity newUser = new UserCsvEntity(getNextUserId(), newUsername, newPassword);
         return addUserToCsv(newUser);
     }
@@ -66,7 +66,7 @@ public class UsersCsvRepository {
         CsvReaderWriter.clearCsv(CsvFilePaths.USERS_CSV_PATH);
 
         //clear all content of users.csv and rewrite with updated usersList
-        for(UserCsvEntity user : usersList) {
+        for (UserCsvEntity user : usersList) {
             CsvReaderWriter.writeNewUserCsv(user);
         }
 
@@ -78,8 +78,8 @@ public class UsersCsvRepository {
         // TODO: Wenn user mit id exisitert, dann true, ansonsten false
         List<UserCsvEntity> usersList = CsvReaderWriter.readUsers(CsvFilePaths.USERS_CSV_PATH);
 
-        for(UserCsvEntity userItem : usersList) {
-            if(user.id() == userItem.id()) {
+        for (UserCsvEntity userItem : usersList) {
+            if (user.id() == userItem.id()) {
                 System.out.println("User with ID: " + user.id() + " exists");
                 return true;
             }
@@ -95,8 +95,8 @@ public class UsersCsvRepository {
 
         List<UserCsvEntity> usersList = CsvReaderWriter.readUsers(CsvFilePaths.USERS_CSV_PATH);
 
-        for(UserCsvEntity user : usersList) {
-            if(user.id() == userId) {
+        for (UserCsvEntity user : usersList) {
+            if (user.id() == userId) {
                 System.out.println("userId " + userId + " exists");
                 return true;
             }

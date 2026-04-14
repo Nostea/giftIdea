@@ -110,6 +110,17 @@ public class CsvReaderWriter {
         bufferedWriter.close();
         System.out.println("Wrote new group " + newGroup.groupName() + " to groups.csv");
     }
+
+    public static List<MembershipCsvEntity> readMemberships(String filepath) {
+        //TODO:
+        List<MembershipCsvEntity> membershipsList = new ArrayList<>();
+
+        return membershipsList;
+    }
+
+    public static void writeNewMembershipCsv(MembershipCsvEntity newMembership) {
+        //TODO:
+    }
 }
 
 /*

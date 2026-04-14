@@ -2,6 +2,7 @@ package org.nostea.gift.controller;
 
 import org.nostea.gift.model.Group;
 import org.nostea.gift.service.GroupService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,12 +57,18 @@ public class GroupController {
     }
 
     @PostMapping
-    public ResponseEntity<Group> createGroupResponse(@RequestBody Group group) {
-        if (group == null || group.getGroupName() == null || group.getGroupName().isEmpty()) {
+    public ResponseEntity<Group> createGroupResponse(@RequestBody Group groupRequest) {
+        if (groupRequest == null || groupRequest.getGroupName() == null || groupRequest.getGroupName().isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-        Group createdGroup = groupService.createGroup(group);
-        return ResponseEntity.ok(createdGroup);
+
+        Group createdGroup = groupService.createGroup(groupRequest);
+
+        if (createdGroup == null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdGroup);
     }
 
     @DeleteMapping("/{id}")
@@ -77,6 +84,18 @@ public class GroupController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @DeleteMapping("/{groupId}/members/{userId}")
+    public ResponseEntity<Void> deleteMemberFromGroup(@PathVariable long groupId, @PathVariable long userId) {
+        if (groupId <= 0 || userId <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Group updatedGroup = groupService.deleteMemberFromGroup(groupId, userId);
+
+        return ResponseEntity.noContent().build();
+
     }
 
 }
