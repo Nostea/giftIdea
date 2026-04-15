@@ -5,7 +5,7 @@ import java.util.List;
 
 public class MembershipsCsvRepository {
 
-    public List<MembershipCsvEntity> getAllMemberships() {
+    public List<MembershipCsvEntity> getAllMemberships() throws IOException {
         List<MembershipCsvEntity> membershipsList = CsvReaderWriter.readMemberships(CsvFilePaths.IS_MEMBER_OF_CSV_PATH);
 
         if (membershipsList.isEmpty()) {
@@ -21,7 +21,7 @@ public class MembershipsCsvRepository {
         return membershipsList;
     }
 
-    public boolean addMembershipToCsv(MembershipCsvEntity newMembership) {
+    public boolean addMembershipToCsv(MembershipCsvEntity newMembership) throws IOException {
         List<MembershipCsvEntity> membershipsList = CsvReaderWriter.readMemberships(CsvFilePaths.IS_MEMBER_OF_CSV_PATH);
 
         for (MembershipCsvEntity membership : membershipsList) {

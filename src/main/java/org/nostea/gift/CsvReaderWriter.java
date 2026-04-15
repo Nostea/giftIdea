@@ -1,6 +1,7 @@
 package org.nostea.gift;
 
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class CsvReaderWriter {
         return users;
     }
 
-    public static void writeNewUserCsv (UserCsvEntity user) throws Exception {
+    public static void writeNewUserCsv(UserCsvEntity user) throws Exception {
         FileWriter fileWriter = new FileWriter(CsvFilePaths.USERS_CSV_PATH, true);  // true macht Append
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
@@ -41,12 +42,12 @@ public class CsvReaderWriter {
     }
 
 
-    public static void clearCsv (String filepath) throws IOException {
+    public static void clearCsv(String filepath) throws IOException {
         new FileWriter(filepath, false).close();  // false deaktiviert append, Inhalt wird dadurch geleert
     }
 
     public static void writeCsvFileHeader(String csvFilename) throws IOException {
-        switch(csvFilename) {
+        switch (csvFilename) {
             case "users.CSV":
                 FileWriter filewriter1 = new FileWriter(CsvFilePaths.USERS_CSV_PATH, true);
                 BufferedWriter bufferedWriter1 = new BufferedWriter(filewriter1);
@@ -111,15 +112,39 @@ public class CsvReaderWriter {
         System.out.println("Wrote new group " + newGroup.groupName() + " to groups.csv");
     }
 
-    public static List<MembershipCsvEntity> readMemberships(String filepath) {
+    public static List<MembershipCsvEntity> readMemberships(String filepath) throws IOException {
         //TODO:
-        List<MembershipCsvEntity> membershipsList = new ArrayList<>();
+        List<MembershipCsvEntity> memberships = new ArrayList<>();
+        BufferedReader reader = new BufferedReader(new FileReader(filepath));
 
-        return membershipsList;
+        reader.readLine(); //Zeile mit header überspringen
+
+        String line = reader.readLine();
+
+        while (line != null) {
+            String[] parts = line.split(";");
+            long userId = Long.parseLong(parts[0]);
+            long groupId = Long.parseLong(parts[1]);
+            LocalDateTime joined_at = LocalDateTime.parse(parts[2]);
+
+            MembershipCsvEntity membership = new MembershipCsvEntity(userId, groupId, joined_at);
+            memberships.add(membership);
+
+            line = reader.readLine();
+        }
+        reader.close();
+        return memberships;
     }
 
-    public static void writeNewMembershipCsv(MembershipCsvEntity newMembership) {
-        //TODO:
+    public static void writeNewMembershipCsv(MembershipCsvEntity newMembership) throws IOException {
+        FileWriter fileWriter = new FileWriter(CsvFilePaths.IS_MEMBER_OF_CSV_PATH, true);
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+        bufferedWriter.write(newMembership.userId() + ";" + newMembership.groupId() + ";" + newMembership.joinedAt() + "\n");
+        bufferedWriter.close();
+        System.out.println("Wrote ");
+
+
     }
 }
 
