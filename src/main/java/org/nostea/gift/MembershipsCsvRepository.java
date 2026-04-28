@@ -2,7 +2,9 @@ package org.nostea.gift;
 
 import java.io.IOException;
 import java.util.List;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class MembershipsCsvRepository {
 
     public List<MembershipCsvEntity> getAllMemberships() throws IOException {

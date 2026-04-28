@@ -2,11 +2,14 @@ package org.nostea.gift.service;
 
 import org.nostea.gift.GroupCsvEntity;
 import org.nostea.gift.GroupsCsvRepository;
+import org.nostea.gift.MembershipCsvEntity;
+import org.nostea.gift.MembershipsCsvRepository;
 import org.nostea.gift.model.Group;
 import org.nostea.gift.model.GroupMembership;
 import org.nostea.gift.model.User;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,13 +18,15 @@ public class GroupService {
 
     private final UserService userService;
     private final GroupMembershipService groupMembershipService;
-
-    private final GroupsCsvRepository groupsCsvRepository = new GroupsCsvRepository();
+    private final GroupsCsvRepository groupsCsvRepository;
+    private final MembershipsCsvRepository membershipsCsvRepository;
 
     //dependency injection, make groupmembership and users visible here
-    public GroupService(UserService userService, GroupMembershipService groupMembershipService) {
+    public GroupService(UserService userService, GroupMembershipService groupMembershipService, GroupsCsvRepository groupsCsvRepository, MembershipsCsvRepository membershipsCsvRepository) {
         this.userService = userService;
         this.groupMembershipService = groupMembershipService;
+        this.groupsCsvRepository = groupsCsvRepository;
+        this.membershipsCsvRepository = membershipsCsvRepository;
     }
 
     private Group convertCsvGroupToGroup(GroupCsvEntity csvGroup) {
@@ -37,7 +42,9 @@ public class GroupService {
             List<Group> groups = new ArrayList<>();
 
             for (GroupCsvEntity csvGroup : csvGroups) {
-                groups.add(convertCsvGroupToGroup(csvGroup));
+                Group group = convertCsvGroupToGroup(csvGroup);
+                getAllGroupMembers(group);
+                groups.add(group);
             }
             return groups;
 
@@ -157,8 +164,28 @@ public class GroupService {
             return null;
         }
 
-        group.getMembers().add(user);  // [] + user object
-        user.getMemberships().add(group); // automatically register membership in user object
+        // CSV membership is persistent, BUT NEED TO avoid double entry of Membership in memory using checks before add.
+        try {
+            MembershipCsvEntity newMembership = new MembershipCsvEntity(userId, groupId, LocalDateTime.now());
+            boolean added = membershipsCsvRepository.addMembershipToCsv(newMembership);
+
+            if (!added) {
+                System.out.println("Membership already exists in CSV");
+                return null;
+            }
+        } catch (Exception e) {
+            System.out.println("Error adding membership to CSV: " + e.getMessage());
+            return null;
+        }
+
+        if (!group.getMembers().contains(user)) {
+            group.getMembers().add(user);
+        }
+
+        if (!user.getMemberships().contains(group)) {
+            user.getMemberships().add(group); // automatically register membership in user object
+        }
+
         System.out.println("User " + user.getUsername() + " added to group " + group.getGroupName());
         return group;
     }
@@ -177,17 +204,48 @@ public class GroupService {
             return null;
         }
 
+        try {
+            MembershipCsvEntity memberShipToDelete = new MembershipCsvEntity(userId, groupId, null);
+
+            boolean deleted = membershipsCsvRepository.deleteMembership(memberShipToDelete);
+
+            if (!deleted) {
+                System.out.println("Error deleting membership from CSV is_member_of");
+                return null;
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error deleting membership from CSV: " + e.getMessage());
+            return null;
+        }
+
+
         group.getMembers().remove(user);
         user.getMemberships().remove(group);
         System.out.println("User " + user.getUsername() + " removed from group " + group.getGroupName());
         return group;
     }
 
-    /*
-    public List<User> getAllGroupMembers() {
-        List<>
+    private void getAllGroupMembers(Group group) {
+        try {
+            List<MembershipCsvEntity> memberships = membershipsCsvRepository.getAllMemberships();
+
+            for (MembershipCsvEntity membership : memberships) {
+                // check if groupId in is_member_of.CSV equals groupId of group
+                if (membership.groupId() == group.getId()) {
+                    User user = userService.getUserById(membership.userId());
+
+                    if (user != null) {
+                        group.getMembers().add(user);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error loading group members: " + e.getMessage());
+        }
+
     }
-*/
 
 
 }

@@ -1,8 +1,10 @@
 package org.nostea.gift;
 
-import java.io.IOException;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
+@Repository
 public class GroupsCsvRepository {
     public List<GroupCsvEntity> getAllGroups() throws Exception {
         // TODO: Lies groups.csv ein, mache aus jeder Zeile der csv einen GroupCsvEntity eintrag in einer Liste, gib die Liste zurueck
