@@ -95,4 +95,13 @@ public class UserController {
 
     }
 
+    @DeleteMapping("/{userId}/memberships/{groupId}")
+    public ResponseEntity<Void> deleteMemberFromGroupById(@PathVariable long userId, @PathVariable long groupId) {
+        if (userId <= 0 || groupId <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        User updatedUser = userService.deleteMemberFromGroupById(groupId,userId);
+    }
+
 }

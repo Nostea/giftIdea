@@ -94,6 +94,10 @@ public class GroupController {
 
         Group updatedGroup = groupService.deleteMemberFromGroup(groupId, userId);
 
+        if (updatedGroup == null) {
+            return ResponseEntity.notFound().build();
+        }
+
         return ResponseEntity.noContent().build();
 
     }

@@ -1,5 +1,7 @@
 package org.nostea.gift.service;
 
+import org.nostea.gift.MembershipCsvEntity;
+import org.nostea.gift.MembershipsCsvRepository;
 import org.nostea.gift.UserCsvEntity;
 import org.nostea.gift.UsersCsvRepository;
 import org.nostea.gift.model.Group;
@@ -7,6 +9,7 @@ import org.nostea.gift.model.User;
 import org.nostea.gift.model.UserRole;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +18,13 @@ public class UserService {
 
     //dependency injection
     private final UsersCsvRepository usersCsvRepository = new UsersCsvRepository();
+    private final GroupService groupService;
+    private final MembershipsCsvRepository membershipsCsvRepository;
+
+    public UserService(GroupService groupService, MembershipsCsvRepository membershipsCsvRepository) {
+        this.groupService = groupService;
+        this.membershipsCsvRepository = membershipsCsvRepository;
+    }
 
     public List<User> getAllUsers() {
         //User user1 = new User(1,"Testuser1", "1234", "user@testmail.com", "defaultAvatar.jpg");
@@ -142,5 +152,33 @@ public class UserService {
     private User convertCsvUserToUser(UserCsvEntity csvUser) {
         String placeholderMail = csvUser.userName().replace(" ", "").toLowerCase() + "@testdomain.de";
         return new User(csvUser.id(), csvUser.userName(), csvUser.password(), placeholderMail, "defaultAvatar.jpg");
+    }
+
+    public User deleteMemberFromGroupById(long groupId, long userId) {
+        User user = getUserById(userId);
+        Group group = groupService.getGroupById(groupId);
+
+        if (group == null) {
+            System.out.println("Group with id " + groupId + " not found");
+            return null;
+        }
+
+        if (user == null) {
+            System.out.println("User with id " + userId + " not found");
+            return null;
+        }
+
+        try {
+            MembershipCsvEntity memberShipToDelete = new MembershipCsvEntity(userId, groupId, null);
+            boolean deleted = membershipsCsvRepository.deleteMembership(memberShipToDelete);
+
+            if (!deleted) {
+                System.out.println("Error deleting membership from CSV is_member_of");
+                return null;
+            }
+        } catch (Exception e) {
+            System.out.println("Error deleting membership from CSV: " + e.getMessage());
+            return null;
+        }
     }
 }
