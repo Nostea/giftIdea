@@ -180,5 +180,6 @@ public class UserService {
             System.out.println("Error deleting membership from CSV: " + e.getMessage());
             return null;
         }
+        return user;
     }
 }
