@@ -40,6 +40,7 @@ public class GroupController {
         }
     }
 
+    /*
     @PostMapping ("/{groupId}/members/{userId}")
     public ResponseEntity<Group> addMemberToGroupResponse(@PathVariable long groupId, @PathVariable long userId){
 
@@ -55,7 +56,8 @@ public class GroupController {
 
         return ResponseEntity.ok(updatedGroup);
     }
-
+    */
+    /*
     @PostMapping
     public ResponseEntity<Group> createGroupResponse(@RequestBody Group groupRequest) {
         if (groupRequest == null || groupRequest.getGroupName() == null || groupRequest.getGroupName().isEmpty()) {
@@ -70,7 +72,8 @@ public class GroupController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdGroup);
     }
-
+    */
+    /*
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGroupByIdResponse(@PathVariable long id) {
         if (id <= 0) {
@@ -85,7 +88,8 @@ public class GroupController {
             return ResponseEntity.notFound().build();
         }
     }
-
+    */
+    /*
     @DeleteMapping("/{groupId}/members/{userId}")
     public ResponseEntity<Void> deleteMemberFromGroup(@PathVariable long groupId, @PathVariable long userId) {
         if (groupId <= 0 || userId <= 0) {
@@ -99,7 +103,6 @@ public class GroupController {
         }
 
         return ResponseEntity.noContent().build();
-
     }
-
+    */
 }

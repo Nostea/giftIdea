@@ -54,7 +54,26 @@ public class MembershipsCsvRepository {
         }
 
         return true;
+    }
 
+    public boolean deleteAssociatedMembershipsByGroupId(long groupId) throws IOException {
+        List<MembershipCsvEntity> memberships =
+                CsvReaderWriter.readMemberships(CsvFilePaths.IS_MEMBER_OF_CSV_PATH);
+
+        boolean removedAny = memberships.removeIf(membership -> membership.groupId() == groupId);
+
+        if (!removedAny) {
+            System.out.println("No memberships found for groupId " + groupId);
+            return false;
+        }
+
+        CsvReaderWriter.clearCsv(CsvFilePaths.IS_MEMBER_OF_CSV_PATH);
+
+        for (MembershipCsvEntity membership : memberships) {
+            CsvReaderWriter.writeNewMembershipCsv(membership);
+        }
+
+        return true;
     }
 
 

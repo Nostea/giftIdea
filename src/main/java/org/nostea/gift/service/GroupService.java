@@ -1,9 +1,6 @@
 package org.nostea.gift.service;
 
-import org.nostea.gift.GroupCsvEntity;
-import org.nostea.gift.GroupsCsvRepository;
-import org.nostea.gift.MembershipCsvEntity;
-import org.nostea.gift.MembershipsCsvRepository;
+import org.nostea.gift.*;
 import org.nostea.gift.model.Group;
 import org.nostea.gift.model.GroupMembership;
 import org.nostea.gift.model.User;
@@ -108,18 +105,29 @@ public class GroupService {
         }
     }
 
-    public boolean deleteGroup(long id) {
-        if (id <= 0) {
+    public boolean deleteGroup(long groupId) {
+        if (groupId <= 0) {
             return false;
         }
 
         try {
-            boolean groupExists = groupsCsvRepository.groupIdExists((int) id);
+            boolean groupExists = groupsCsvRepository.groupIdExists((int) groupId);
             if (!groupExists) {
                 return false;
             }
 
-            GroupCsvEntity groupDoBeDeleted = new GroupCsvEntity((int) id, "");
+            List<MembershipCsvEntity> memberships = membershipsCsvRepository.getAllMemberships();
+            List<MembershipCsvEntity> remainingMemberships = new ArrayList<>();
+
+            for( MembershipCsvEntity membership : memberships) {
+                if(membership.groupId() != groupId) {
+                    remainingMemberships.add(membership);
+                }
+            }
+
+            // the Memberships of Users are loaded every time from the csv. Removing all entries with this groupId will delete the association for all members(users).
+            membershipsCsvRepository.deleteAssociatedMembershipsByGroupId(groupId);
+            GroupCsvEntity groupDoBeDeleted = new GroupCsvEntity((int) groupId, "");
             return groupsCsvRepository.deleteGroup(groupDoBeDeleted);
 
         } catch (Exception e) {

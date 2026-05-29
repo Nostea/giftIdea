@@ -18,20 +18,11 @@ public class UserService {
 
     //dependency injection
     private final UsersCsvRepository usersCsvRepository = new UsersCsvRepository();
-    private final GroupService groupService;
-    private final MembershipsCsvRepository membershipsCsvRepository;
 
-    public UserService(GroupService groupService, MembershipsCsvRepository membershipsCsvRepository) {
-        this.groupService = groupService;
-        this.membershipsCsvRepository = membershipsCsvRepository;
-    }
+
+    public UserService() {}
 
     public List<User> getAllUsers() {
-        //User user1 = new User(1,"Testuser1", "1234", "user@testmail.com", "defaultAvatar.jpg");
-        //User user2 = new User(2,"Knapfel2", "Passwort123", "Knapfel2@testmail.com", "defaultAvatar.jpg");
-        //User user3 = new User(3,"TheDude33", "PassPass33", "TheDude33@testmail.com", "defaultAvatar.jpg");
-
-        //List<User> users = List.of(user1,user2,user3);
 
         try {
             List<UserCsvEntity> csvUsers = usersCsvRepository.getAllUsers();
@@ -154,6 +145,7 @@ public class UserService {
         return new User(csvUser.id(), csvUser.userName(), csvUser.password(), placeholderMail, "defaultAvatar.jpg");
     }
 
+    /*
     public User deleteMemberFromGroupById(long groupId, long userId) {
         User user = getUserById(userId);
         Group group = groupService.getGroupById(groupId);
@@ -182,4 +174,5 @@ public class UserService {
         }
         return user;
     }
+     */
 }
