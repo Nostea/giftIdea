@@ -1,12 +1,15 @@
 package org.nostea.gift.model;
 
-import org.nostea.gift.UserCsvEntity;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
 
+@Entity
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String username;
     private String password;
@@ -27,6 +30,8 @@ public class User {
         this.memberships = new ArrayList<>();
         this.createdAt = LocalDateTime.now();
     }
+
+    public User() {}
 
     // Getter & Setter
     public List<Group> getMemberships() {

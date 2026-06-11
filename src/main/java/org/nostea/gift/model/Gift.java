@@ -2,6 +2,9 @@ package org.nostea.gift.model;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Gift {
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
@@ -11,11 +14,15 @@ public class Gift {
         this.updatedAt = updatedAt;
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String giftName;
     private String thumbnail;
     private double price;
     private String externalLink;
+    @ManyToOne
+    @JoinColumn(name = "created_by_id")
     private User createdBy;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -30,6 +37,8 @@ public class Gift {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = null;
     }
+
+    public Gift() {}
 
     public long getId() {
         return id;
