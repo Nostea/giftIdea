@@ -10,14 +10,14 @@ public class Group {
     private String groupName;
     private String description;
     private GroupMode mode;
-    private int budgetLimit;
+    private double budgetLimit;
     private List<User> members;
     private User owner;
     private LocalDate deadline;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Group(long id, String groupName, String description, int budgetLimit, User owner) {
+    public Group(long id, String groupName, String description, double budgetLimit, User owner) {
         this.id = id;
         this.groupName = groupName;
         this.description = description;
@@ -38,11 +38,11 @@ public class Group {
         this.mode = mode;
     }
 
-    public int getBudgetLimit() {
+    public double getBudgetLimit() {
         return budgetLimit;
     }
 
-    public void setBudgetLimit(int budgetLimit) {
+    public void setBudgetLimit(double budgetLimit) {
         this.budgetLimit = budgetLimit;
     }
 

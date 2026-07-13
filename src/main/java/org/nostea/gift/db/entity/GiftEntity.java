@@ -1,37 +1,38 @@
-package org.nostea.gift.model;
+package org.nostea.gift.db.entity;
 
+import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class Gift {
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
+@Entity
+@Table(name = "gifts")
+public class GiftEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Column(nullable = false)
     private String giftName;
     private String thumbnail;
-    private double price;
+
+    @Column(nullable = false, precision = 8, scale = 2)
+    private BigDecimal price;
+
     private String externalLink;
-    private User createdBy;
+
+    @ManyToOne
+    @JoinColumn(name = "createdBy", nullable = false)
+    private UserEntity createdBy;
+
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
 
-    public Gift(long id, String giftName, String thumbnail, double price, String externalLink, User createdBy) {
-        this.id = id;
-        this.giftName = giftName;
-        this.thumbnail = thumbnail;
-        this.price = price;
-        this.externalLink = externalLink;
-        this.createdBy = createdBy;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = null;
-    }
+    public GiftEntity(){};
 
-    public Gift() {}
+    // --- Getter & Setter ---
 
     public long getId() {
         return id;
@@ -57,11 +58,11 @@ public class Gift {
         this.thumbnail = thumbnail;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
@@ -73,11 +74,11 @@ public class Gift {
         this.externalLink = externalLink;
     }
 
-    public User getCreatedBy() {
+    public UserEntity getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(User createdBy) {
+    public void setCreatedBy(UserEntity createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -87,5 +88,13 @@ public class Gift {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

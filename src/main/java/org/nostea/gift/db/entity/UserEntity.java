@@ -1,39 +1,36 @@
-package org.nostea.gift.model;
+package org.nostea.gift.db.entity;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.ArrayList;
 
-public class User {
+@Entity
+@Table(name = "users")
+public class UserEntity {
+    @Id
     private long id;
+
+    @Column(nullable = false, unique = true)
     private String username;
+
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false, unique = true)
     private String email;
+
     private String avatar;
-    private UserRole role;
-    private List<Group> memberships;
-    private LocalDateTime updatedAt;
+
+    @Column(nullable = false)
+    private String userRole;
+
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    public User(long id, String username, String password, String email, String avatar){
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.avatar = avatar;
-        this.role = UserRole.USER;
-        this.memberships = new ArrayList<>();
-        this.createdAt = LocalDateTime.now();
-    }
+    private LocalDateTime updatedAt;
 
-    // Getter & Setter
-    public List<Group> getMemberships() {
-        return memberships;
-    }
+    public UserEntity(){};
 
-    public void setMemberships(List<Group> memberships) {
-        this.memberships = memberships;
-    }
+    // --- Getter & Setter ---
 
     public long getId() {
         return id;
@@ -75,20 +72,12 @@ public class User {
         this.avatar = avatar;
     }
 
-    public UserRole getRole() {
-        return role;
+    public String getUserRole() {
+        return userRole;
     }
 
-    public void setRole(UserRole role) {
-        this.role = role;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -99,4 +88,11 @@ public class User {
         this.createdAt = createdAt;
     }
 
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }
